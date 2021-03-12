@@ -132,7 +132,7 @@ module.exports = function(router, requireLogin, requireRole) {
   router.get('/api/users/by-:refKey/:refId*'  , requireRole('admin'), users.listByRefs);
   router.get('/api/users/by-:refKey-list'    , requireRole('admin'), users.listByValues);
   router.get('/api/users/get-logged-in' , requireLogin(), users.getLoggedInUser);
-  router.get('/api/users/:id'           , requireRole('admin'), users.getById); // must be an 'admin' to see individual user info
+  router.get('/api/users/:id'           , requireLogin(), users.getById); // must be an 'admin' to see individual user info
 
   // - Update
   router.put('/api/users/update-profile'     , requireLogin(), users.updateProfile);
