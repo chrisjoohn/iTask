@@ -67,7 +67,7 @@ class SingleFlow extends Binder {
   _handleTaskSubmit(e) {
     e.preventDefault();
     const { defaultTask, dispatch, match } = this.props;
-    let newTask = { ...this.state.task, status: "awaiting_approval" };
+    let newTask = { ...this.state.task };
     newTask._flow = match.params.flowId;
     dispatch(taskActions.sendCreateTask(newTask)).then((taskRes) => {
       if (taskRes.success) {
@@ -159,6 +159,7 @@ class SingleFlow extends Binder {
                             taskActions.sendUpdateTask({
                               ...task,
                               complete: true,
+                              status: "awaiting_approval",
                             })
                           )
                         }
@@ -199,6 +200,7 @@ class SingleFlow extends Binder {
                             taskActions.sendUpdateTask({
                               ...task,
                               complete: false,
+                              status: "open",
                             })
                           )
                         }

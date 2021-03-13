@@ -131,7 +131,7 @@ class SingleTask extends Binder {
 
     const TaskIconStatus = () => {
       if (selectedTask.status === "approved") {
-        return "Approved!";
+        return "Approved! ✅";
       }
 
       if (selectedTask.status === "awaiting_approval") {
@@ -152,8 +152,8 @@ class SingleTask extends Binder {
           )
         ) : (
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-            <TaskIconStatus />
             <h1> {selectedTask.name}</h1>
+            status: {TaskIconStatus()}
             {isAdmin &&
               selectedTask.status === "awaiting_approval" &&
               selectedTask.complete && (
