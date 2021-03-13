@@ -121,7 +121,7 @@ class SingleTask extends Binder {
 
     const isFetching = taskStore.selected.isFetching;
 
-    const isAdmin = roles.includes("admin");
+    const isAdmin = roles && roles.includes("admin");
 
     const TaskIconStatus = () => {
       if (selectedTask.status === "approved") {
