@@ -21,6 +21,7 @@ import Binder from "../../../global/components/Binder.js.jsx";
 // import resource components
 import TaskLayout from "../components/TaskLayout.js.jsx";
 import NoteListItem from "../../note/components/NoteListItem.js.jsx";
+import ApprovalButtons from "../components/ApprovalButtons.js.jsx";
 
 class SingleTask extends Binder {
   constructor(props) {
@@ -65,6 +66,20 @@ class SingleTask extends Binder {
     });
   };
 
+  onApprove = () => {
+    const { taskStore, dispatch } = this.props;
+    const selectedTask = taskStore.selected.getItem();
+    dispatch(
+      taskActions.sendUpdateTask({ ...selectedTask, status: "approved" })
+    );
+  };
+
+  onReject = () => {
+    const { taskStore, dispatch } = this.props;
+    const selectedTask = taskStore.selected.getItem();
+    dispatch(taskActions.sendUpdateTask({ ...selectedTask, status: "open" }));
+  };
+
   componentDidMount() {
     const { dispatch, match } = this.props;
     dispatch(taskActions.fetchSingleIfNeeded(match.params.taskId));
@@ -72,7 +87,18 @@ class SingleTask extends Binder {
   }
 
   render() {
-    const { taskStore, noteStore, match, dispatch } = this.props;
+    const {
+      taskStore,
+      noteStore,
+      match,
+      dispatch,
+
+      userStore: {
+        loggedIn: {
+          user: { roles },
+        },
+      },
+    } = this.props;
 
     let notesId = noteStore.byId;
 
@@ -95,7 +121,19 @@ class SingleTask extends Binder {
 
     const isFetching = taskStore.selected.isFetching;
 
-    console.log(notesListItems);
+    const isAdmin = roles.includes("admin");
+
+    const TaskIconStatus = () => {
+      if (selectedTask.status === "approved") {
+        return "Approved!";
+      }
+
+      if (selectedTask.status === "awaiting_approval") {
+        return "Awaiting Approval";
+      }
+
+      return "Open";
+    };
 
     return (
       <TaskLayout>
@@ -108,7 +146,14 @@ class SingleTask extends Binder {
           )
         ) : (
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
+            <TaskIconStatus />
             <h1> {selectedTask.name}</h1>
+            {isAdmin && selectedTask.status === "awaiting_approval" && (
+              <ApprovalButtons
+                onApprove={this.onApprove}
+                onReject={this.onReject}
+              />
+            )}
             <hr />
             <p>
               {" "}
