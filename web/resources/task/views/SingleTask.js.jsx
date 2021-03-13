@@ -21,7 +21,6 @@ import Binder from "../../../global/components/Binder.js.jsx";
 // import resource components
 import TaskLayout from "../components/TaskLayout.js.jsx";
 import NoteListItem from "../../note/components/NoteListItem.js.jsx";
-import NoteList from "../../note/views/NoteList.js.jsx";
 
 class SingleTask extends Binder {
   constructor(props) {
@@ -77,9 +76,13 @@ class SingleTask extends Binder {
 
     let notesId = noteStore.byId;
 
-    const notesListItems = Object.keys(notesId).map(key => {
-      return notesId[key]
-    });
+    const notesListItems = Object.keys(notesId)
+      .map((key) => {
+        if (notesId[key]._task === match.params.taskId) {
+          return notesId[key];
+        }
+      })
+      .filter((item) => item);
     //const notesListItems = noteStore.util.getList("_task", match.params.taskId);
 
     /**
@@ -91,6 +94,8 @@ class SingleTask extends Binder {
       !selectedTask || !selectedTask._id || taskStore.selected.didInvalidate;
 
     const isFetching = taskStore.selected.isFetching;
+
+    console.log(notesListItems);
 
     return (
       <TaskLayout>
