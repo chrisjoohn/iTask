@@ -77,7 +77,13 @@ class SingleTask extends Binder {
   onReject = () => {
     const { taskStore, dispatch } = this.props;
     const selectedTask = taskStore.selected.getItem();
-    dispatch(taskActions.sendUpdateTask({ ...selectedTask, status: "open" }));
+    dispatch(
+      taskActions.sendUpdateTask({
+        ...selectedTask,
+        status: "open",
+        complete: false,
+      })
+    );
   };
 
   componentDidMount() {
@@ -148,12 +154,14 @@ class SingleTask extends Binder {
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
             <TaskIconStatus />
             <h1> {selectedTask.name}</h1>
-            {isAdmin && selectedTask.status === "awaiting_approval" && (
-              <ApprovalButtons
-                onApprove={this.onApprove}
-                onReject={this.onReject}
-              />
-            )}
+            {isAdmin &&
+              selectedTask.status === "awaiting_approval" &&
+              selectedTask.complete && (
+                <ApprovalButtons
+                  onApprove={this.onApprove}
+                  onReject={this.onReject}
+                />
+              )}
             <hr />
             <p>
               {" "}
